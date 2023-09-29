@@ -12,10 +12,10 @@ TODO : Add Builder for this class so that validation can be done
 */
 public class Game {
     private Board board;
-    private Queue<Player> players;
-    List<Move> moves;
+    private List<Player> players;
+    private List<Move> moves;
 
-    public Game(Board board, Queue<Player> players) {
+    public Game(Board board, List<Player> players) {
         this.board = board;
         this.players = players;
         this.moves = new ArrayList<>();
@@ -30,13 +30,12 @@ public class Game {
     }
     public Player startGame(){
         // Shuffle the players
-        List<Player> list = new LinkedList<>(players);
-        Collections.shuffle(list);
+        Collections.shuffle(players);
         // Create a new queue and add the shuffled elements
-        players = new LinkedList<>(list);
+        Queue<Player> playerQueue = new LinkedList<>(players);
         Player winner = null;
         while (isGameOver()){
-            Player currentPlayer = players.remove();
+            Player currentPlayer = playerQueue.remove();
             Move move = currentPlayer.makeMove();
             while(!isValidMove(move)){
                 move = currentPlayer.makeMove();

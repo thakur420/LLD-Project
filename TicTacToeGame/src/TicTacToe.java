@@ -11,7 +11,7 @@ public class TicTacToe {
         Board board = new Board(size);
         // TODO : Create Player
         int noOfHumanPlayer = size - 1;
-        Queue<Player> players = new LinkedList<>();
+        List<Player> players = new ArrayList<>();
         Player botPlayer = takeBotPlayer(sc);
         if(botPlayer != null){
             noOfHumanPlayer -= 1;
