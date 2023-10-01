@@ -22,4 +22,17 @@ public class Board {
     public int getSize() {
         return size;
     }
+    public void display(){
+        for (int i= 0; i < size; i++){
+            List<Cell> rowList = board.get(i);
+            for(int j=0; j <size;j++){
+                Cell cell = rowList.get(j);
+                char displayChar = ' ';
+                if(cell.getSymbol() != null)
+                    displayChar = cell.getSymbol();
+                System.out.print("| " +displayChar + " |");
+            }
+            System.out.println();
+        }
+    }
 }

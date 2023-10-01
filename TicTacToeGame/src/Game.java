@@ -14,11 +14,15 @@ public class Game {
     private Board board;
     private List<Player> players;
     private List<Move> moves;
+    private GameStatus gameStatus;
+    private int noOfSymbolOnBoard;
 
     public Game(Board board, List<Player> players) {
         this.board = board;
         this.players = players;
         this.moves = new ArrayList<>();
+        this.gameStatus = GameStatus.IN_PROGESS;
+        this.noOfSymbolOnBoard = 0;
     }
     public void validateGameConfiguration() throws InvalidBoardSizeException,
             InvalidNumberOfPlayerException,
@@ -33,28 +37,76 @@ public class Game {
         Collections.shuffle(players);
         // Create a new queue and add the shuffled elements
         Queue<Player> playerQueue = new LinkedList<>(players);
-        Player winner = null;
-        while (isGameOver()){
-            Player currentPlayer = playerQueue.remove();
-            Move move = currentPlayer.makeMove();
-            while(!isValidMove(move)){
-                move = currentPlayer.makeMove();
+        Player currentPlayer = null;
+        while(!isGameOver()){
+            currentPlayer = playerQueue.remove();
+            board.display();
+            Move move = takeValidMove(currentPlayer);
+            if(undo()){
+                System.out.println("Play your move again:");
+                move = takeValidMove(currentPlayer);
             }
-            applyMove();
+            noOfSymbolOnBoard += 1;
+            applyMove(move);// fill the cell with the player corresponding move.
             moves.add(move);
+            playerQueue.add(currentPlayer);
         }
-        return winner;
+        board.display();
+        if(gameStatus == GameStatus.WIN)
+            return currentPlayer;
+        return null;
+    }
+
+    private Move takeValidMove(Player currentPlayer) {
+        Move move = currentPlayer.makeMove();
+        while(!isValidMove(move)){
+            System.out.println("Your move was not valid. Please play a valid move");
+            board.display();
+            move = currentPlayer.makeMove();
+        }
+        return move;
+    }
+
+    private boolean undo() {
+        System.out.println("Hey! want to undo your last Move?");
+        Scanner sc = new Scanner(System.in);
+        String undoMove = sc.next();
+        return undoMove.equalsIgnoreCase("Y");
     }
 
     private boolean isValidMove(Move move) {
-        return true;
+        Cell cell = move.getCell();
+        int row = cell.getRow();
+        int col = cell.getCol();
+        if(row < 0 || row >= board.getSize())
+            return false;
+        if(col < 0 || col >= board.getSize())
+            return false;
+        return board.board.get(row).get(col).getSymbol() == null;
     }
 
-    private void applyMove() {
+    private void applyMove(Move move) {
+        Cell cell = move.getCell();
+        board.board.get(cell.getRow()).set(cell.getCol(), cell);
     }
 
     private boolean isGameOver() {
-        return true;
+        // All cells are filled
+        if(noOfSymbolOnBoard == board.getSize()*board.getSize()){
+            gameStatus = GameStatus.DRAW;
+            return true;
+        }
+        // Game have a winner
+        if(gameHasWinner()){
+            gameStatus = GameStatus.WIN;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean gameHasWinner() {
+        //TODO: Logic to find winner in O(1)
+        return false;
     }
 
     public void initialiseGame(){

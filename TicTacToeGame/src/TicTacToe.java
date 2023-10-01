@@ -24,7 +24,6 @@ public class TicTacToe {
         Game game = new Game(board,players);
         game.validateGameConfiguration();
         Player winner = game.startGame();
-
     }
     private static Player takeBotPlayer(Scanner sc){
         System.out.println("Is Game have Bot Player : Y/N");
