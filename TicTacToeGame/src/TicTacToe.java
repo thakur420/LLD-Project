@@ -3,7 +3,9 @@ import java.util.*;
 import Exception.*;
 
 public class TicTacToe {
-    public static void main(String[] args) throws InvalidBotCountPlayerException, InvalidNumberOfPlayerException, DuplicateSymbolException, InvalidBoardSizeException {
+    public static void main(String[] args) throws InvalidBotCountPlayerException,
+            InvalidNumberOfPlayerException, DuplicateSymbolException,
+                InvalidBoardSizeException, InterruptedException {
         // TODO : Create Board
         System.out.println("Enter Board Size : ");
         Scanner sc = new Scanner(System.in);
@@ -24,6 +26,7 @@ public class TicTacToe {
         Game game = new Game(board,players);
         game.validateGameConfiguration();
         Player winner = game.startGame();
+        game.replay();
     }
     private static Player takeBotPlayer(Scanner sc){
         System.out.println("Is Game have Bot Player : Y/N");

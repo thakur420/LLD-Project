@@ -18,5 +18,5 @@ public abstract class Player {
         return symbol;
     }
 
-    public abstract Move makeMove();
+    public abstract Move makeMove(int size);
 }

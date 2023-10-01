@@ -42,12 +42,12 @@ public class Game {
             currentPlayer = playerQueue.remove();
             board.display();
             Move move = takeValidMove(currentPlayer);
-            if(undo()){
+            if(currentPlayer instanceof HumanPlayer && undo()){
                 System.out.println("Play your move again:");
                 move = takeValidMove(currentPlayer);
             }
             noOfSymbolOnBoard += 1;
-            applyMove(move);// fill the cell with the player corresponding move.
+            board.applyMove(move);// fill the cell with the player corresponding move.
             moves.add(move);
             playerQueue.add(currentPlayer);
         }
@@ -58,11 +58,11 @@ public class Game {
     }
 
     private Move takeValidMove(Player currentPlayer) {
-        Move move = currentPlayer.makeMove();
+        Move move = currentPlayer.makeMove(board.getSize());
         while(!isValidMove(move)){
             System.out.println("Your move was not valid. Please play a valid move");
             board.display();
-            move = currentPlayer.makeMove();
+            move = currentPlayer.makeMove(board.getSize());
         }
         return move;
     }
@@ -85,10 +85,7 @@ public class Game {
         return board.board.get(row).get(col).getSymbol() == null;
     }
 
-    private void applyMove(Move move) {
-        Cell cell = move.getCell();
-        board.board.get(cell.getRow()).set(cell.getCol(), cell);
-    }
+
 
     private boolean isGameOver() {
         // All cells are filled
@@ -145,5 +142,17 @@ public class Game {
             throw new DuplicateSymbolException("All player should have unique symbol");
     }
 
-
+    public void replay() throws InterruptedException {
+        System.out.println("Replaying the game ....");
+        Board gameBoard = new Board(board.getSize());
+        for(Move move : moves){
+            Cell cell = move.getCell();
+            Player player = move.getPlayer();
+            System.out.println("Move played by "+ player.getName()+ ",sign "+player.getSymbol());
+            System.out.println("Move played in cell "+cell.getRow()+"," +cell.getCol());
+            gameBoard.applyMove(move);
+            gameBoard.display();
+            Thread.sleep(2000);
+        }
+    }
 }

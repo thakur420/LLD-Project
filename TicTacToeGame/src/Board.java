@@ -35,4 +35,8 @@ public class Board {
             System.out.println();
         }
     }
+    public void applyMove(Move move) {
+        Cell cell = move.getCell();
+        board.get(cell.getRow()).set(cell.getCol(), cell);
+    }
 }
