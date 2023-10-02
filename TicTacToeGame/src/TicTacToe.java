@@ -26,6 +26,11 @@ public class TicTacToe {
         Game game = new Game(board,players);
         game.validateGameConfiguration();
         Player winner = game.startGame();
+        if (winner != null){
+            System.out.println("Game Won By Player : "+winner.getName());
+        }else{
+            System.out.println("Game Darw ...");
+        }
         game.replay();
     }
     private static Player takeBotPlayer(Scanner sc){

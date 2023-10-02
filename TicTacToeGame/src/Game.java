@@ -16,6 +16,7 @@ public class Game {
     private List<Move> moves;
     private GameStatus gameStatus;
     private int noOfSymbolOnBoard;
+    private WinnerCheck tictactoeWinnerCheck;
 
     public Game(Board board, List<Player> players) {
         this.board = board;
@@ -23,6 +24,7 @@ public class Game {
         this.moves = new ArrayList<>();
         this.gameStatus = GameStatus.IN_PROGESS;
         this.noOfSymbolOnBoard = 0;
+        this.tictactoeWinnerCheck = new TicTacToeWinnerCheck(board.getSize());
     }
     public void validateGameConfiguration() throws InvalidBoardSizeException,
             InvalidNumberOfPlayerException,
@@ -38,7 +40,7 @@ public class Game {
         // Create a new queue and add the shuffled elements
         Queue<Player> playerQueue = new LinkedList<>(players);
         Player currentPlayer = null;
-        while(!isGameOver()){
+        while(gameStatus == GameStatus.IN_PROGESS){
             currentPlayer = playerQueue.remove();
             board.display();
             Move move = takeValidMove(currentPlayer);
@@ -50,11 +52,21 @@ public class Game {
             board.applyMove(move);// fill the cell with the player corresponding move.
             moves.add(move);
             playerQueue.add(currentPlayer);
+            checkWinner(move);
         }
         board.display();
         if(gameStatus == GameStatus.WIN)
             return currentPlayer;
         return null;
+    }
+
+    private void checkWinner(Move move) {
+        if(tictactoeWinnerCheck.hasWinner(move)){
+            gameStatus = GameStatus.WIN;
+        }
+        else if(noOfSymbolOnBoard == board.getSize()*board.getSize()){
+            gameStatus = GameStatus.DRAW;
+        }
     }
 
     private Move takeValidMove(Player currentPlayer) {
@@ -83,33 +95,6 @@ public class Game {
         if(col < 0 || col >= board.getSize())
             return false;
         return board.board.get(row).get(col).getSymbol() == null;
-    }
-
-
-
-    private boolean isGameOver() {
-        // All cells are filled
-        if(noOfSymbolOnBoard == board.getSize()*board.getSize()){
-            gameStatus = GameStatus.DRAW;
-            return true;
-        }
-        // Game have a winner
-        if(gameHasWinner()){
-            gameStatus = GameStatus.WIN;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean gameHasWinner() {
-        //TODO: Logic to find winner in O(1)
-        return false;
-    }
-
-    public void initialiseGame(){
-         /*
-                Initialize Game with initial State.
-         */
     }
 
     private void validateBoardSize() throws InvalidBoardSizeException {
